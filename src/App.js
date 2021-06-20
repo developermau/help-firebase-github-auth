@@ -9,7 +9,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState("");
 
-  const handlerAuthGithub = () => {
+  const handlerLoginGithub = () => {
     console.clear();
     var provider = new firebase.auth.GithubAuthProvider();
     auth
@@ -26,12 +26,37 @@ export default function App() {
         console.error(error);
       });
   };
+
+  const handlerLogOutGithub = () => {
+    auth
+      .signOut()
+      .then(() => {
+        setToken(null);
+        setUser(null);
+        setIsAuth(false);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <div className="App">
-      {!isAuth && <button onClick={handlerAuthGithub}>Auth Github</button>}
+      {!isAuth && <button onClick={handlerLoginGithub}>Log In Github</button>}
       {isAuth && token && (
         <div>
-          <pre>{JSON.stringify(user)}</pre>
+          <p>
+            {user.displayName} ({user.uid})
+          </p>
+          <p>Token: ${token}</p>
+          <img
+            src={user.photoURL}
+            alt={`User ${user.uid}`}
+            width="20"
+            height="20"
+          />
+          <br />
+          <button onClick={handlerLogOutGithub}>Sign Out Github</button>
         </div>
       )}
     </div>
